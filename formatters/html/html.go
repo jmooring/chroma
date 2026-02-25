@@ -262,15 +262,19 @@ func (f *Formatter) writeHTML(w io.Writer, style *chroma.Style, tokens []chroma.
 			if next {
 				highlightIndex++
 			}
+			// if highlight {
+			// 	fmt.Fprintf(w, "<span %s>", f.styleAttr(css, chroma.LineHighlight, "display:flex;"))
+			// 	// fmt.Fprintf(w, "<span %s>", f.styleAttr(css, chroma.LineHighlight))
+			// }
 			if highlight {
-				fmt.Fprintf(w, "<span%s>", f.styleAttr(css, chroma.LineHighlight))
+				fmt.Fprintf(w, "<span%s%s>%s\n</span>", f.styleAttr(css, chroma.LineNumbersTable), f.lineIDAttribute(line), f.lineTitleWithLinkIfNeeded(css, lineDigits, line))
+			} else {
+				fmt.Fprintf(w, "<span%s%s>%s\n</span>", f.styleAttr(css, chroma.LineNumbersTable), f.lineIDAttribute(line), f.lineTitleWithLinkIfNeeded(css, lineDigits, line))
 			}
 
-			fmt.Fprintf(w, "<span%s%s>%s\n</span>", f.styleAttr(css, chroma.LineNumbersTable), f.lineIDAttribute(line), f.lineTitleWithLinkIfNeeded(css, lineDigits, line))
-
-			if highlight {
-				fmt.Fprintf(w, "</span>")
-			}
+			// if highlight {
+			// 	fmt.Fprintf(w, "</span>")
+			// }
 		}
 		fmt.Fprint(w, f.preWrapper.End(false))
 		fmt.Fprint(w, "</td>\n")
@@ -540,6 +544,7 @@ func (f *Formatter) styleToCSS(style *chroma.Style) map[chroma.TokenType]string 
 	lineNumbersStyle := `white-space: pre; -webkit-user-select: none; user-select: none; margin-right: 0.4em; padding: 0 0.4em 0 0.4em;`
 	// All rules begin with default rules followed by user provided rules
 	classes[chroma.Line] = `display: flex;` + classes[chroma.Line]
+	// classes[chroma.LineHighlight] = "display: flex;" + classes[chroma.LineHighlight]
 	classes[chroma.LineNumbers] = lineNumbersStyle + classes[chroma.LineNumbers]
 	classes[chroma.LineNumbersTable] = lineNumbersStyle + classes[chroma.LineNumbersTable]
 	classes[chroma.LineTable] = "border-spacing: 0; padding: 0; margin: 0; border: 0;" + classes[chroma.LineTable]
